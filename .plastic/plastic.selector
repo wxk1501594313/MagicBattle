@@ -1,0 +1,4 @@
+repository "MagicalBattle@wechat_os_qy0_7sl6lunqemycpq22joile@cloud.cn"
+  path "/"
+    br "/main"
+    co "/main"
