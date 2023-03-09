@@ -16,6 +16,11 @@ public class SlimController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.gameStop)
+        {
+            agent.ResetPath();//Çå¿Õµ¼º½Â·¾¶
+            return;
+        }
         agent.SetDestination(player.position);
     }
 }
