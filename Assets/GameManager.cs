@@ -2,13 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public static Action<bool> win;//胜负事件
+    public static Action addSilme;
+    public static Action<int> resetText;
     public static bool gameStop;//是否处于页面弹出，游戏停止状态
     public Transform unityChan, slime;
     public GameObject winPage, losePage;//胜负页面
+    public GameObject slimecopy;//史莱姆预制体
+    public Text text;
     Pose initialUnityChan, initialSlime;//记录角色的初始状态
     void Start()
     {
@@ -19,21 +24,29 @@ public class GameManager : MonoBehaviour
             gameStop = true;//游戏停止
             winPage.SetActive(result);//true则打开胜利页面
             losePage.SetActive(!result);//false则打开失败页面
+            text.gameObject.SetActive(false);
         };
+        addSilme = () =>
+        {
+            GameObject newSlime = Instantiate(slimecopy, initialSlime.position, initialSlime.rotation);
+            newSlime.GetComponent<SlimController>().player = unityChan;
+        };
+        resetText = count =>
+        {
+            text.text = ("得分" + count);
+        };
+        ResetGame();
     }
     public void ResetGame()//重制姿态与页面
     {
+        resetText(0);
         gameStop = false;//游戏运行
         unityChan.position = initialUnityChan.position;
         unityChan.rotation = initialUnityChan.rotation;
-        slime.position = initialSlime.position;
-        slime.rotation = slime.rotation;
+        GameObject newSlime = Instantiate(slimecopy, initialSlime.position, initialSlime.rotation);
+        newSlime.GetComponent<SlimController>().player = unityChan;
         winPage.SetActive(false);
         losePage.SetActive(false);
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
+        text.gameObject.SetActive(true);
     }
 }

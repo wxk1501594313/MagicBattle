@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,12 +14,14 @@ public class PlayerController : MonoBehaviour
     AudioSource audioSource;
     public AudioClip run, attack;
     bool isAttacking;
+    int count;
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         particle = GetComponent<ParticleSystem>();
         audioSource = GetComponent<AudioSource>();
+        count = 0;
     }
 
     // Update is called once per frame
@@ -63,17 +66,26 @@ public class PlayerController : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "Slim")
+        if (other.name == "Slim" || other.name == "Slim(Clone)")
         {
+            Destroy(other.gameObject);
             if (isAttacking)
             {
-                GameManager.win?.Invoke(true);
-                print("win");
+                if(count >= 3)
+                {
+                    count = 0;
+                    GameManager.win?.Invoke(true);
+                    return;
+                }              
+                count += 1;
+                GameManager.resetText(count);
+                GameManager.addSilme?.Invoke();
             }
             else
             {
+                count = 0;
+                print("Ê§°Ü");
                 GameManager.win?.Invoke(false);
-                print("lose");
             }
         }
     }
